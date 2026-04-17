@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Intelligence Feed</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   SIGNAL NEWS v2 — DARK EDITORIAL THEME
+═══════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #070708;
+  --surface: #0d0d10;
+  --surface2: #13131a;
+  --surface3: #1a1a24;
+  --border: #1c1c28;
+  --border2: #28283a;
+  --accent: #e8c547;
+  --accent2: #c4a12e;
+  --accent-dim: rgba(232,197,71,0.08);
+  --accent-glow: rgba(232,197,71,0.18);
+  --red: #c0392b;
+  --blue: #4a90d9;
+  --green: #27ae60;
+  --purple: #8e6dbf;
+  --text: #d8d8e0;
+  --text2: #888898;
+  --text3: #555568;
+  --text-bright: #f0f0f8;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ─── SCROLLBAR ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ─── HEADER ────────────────────────────────────────────────────── */
+#header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(7,7,8,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+
+.header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0 8px;
+  gap: 12px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.logo span { color: var(--text3); font-size: 11px; font-family: var(--font-mono); font-weight: 300; letter-spacing: 0.05em; display: block; margin-top: -4px; }
+
+.header-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* ─── SEARCH ────────────────────────────────────────────────────── */
+.search-wrap {
+  position: relative;
+}
+#search-input {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 10px 6px 28px;
+  border-radius: 3px;
+  width: 180px;
+  outline: none;
+  transition: border-color 0.2s, width 0.3s;
+}
+#search-input:focus { border-color: var(--accent); width: 240px; }
+#search-input::placeholder { color: var(--text3); }
+.search-icon {
+  position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+  color: var(--text3); font-size: 12px; pointer-events: none;
+}
+
+/* ─── CONTROL BUTTONS ───────────────────────────────────────────── */
+.ctrl-btn {
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text2); font-family: var(--font-mono); font-size: 10px;
+  padding: 5px 10px; border-radius: 3px; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap; letter-spacing: 0.04em;
+}
+.ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ctrl-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.ctrl-btn.accent { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
+.ctrl-btn.accent:hover { background: var(--accent2); }
+.ctrl-btn.danger { border-color: var(--red); color: var(--red); }
+.ctrl-btn.danger:hover { background: rgba(192,57,43,0.1); }
+
+/* font-size controls */
+.font-row { display: flex; align-items: center; gap: 4px; }
+.font-row label { font-family: var(--font-mono); font-size: 9px; color: var(--text3); letter-spacing: 0.06em; }
+
+/* ─── FILTER BAR ────────────────────────────────────────────────── */
+.filter-bar {
+  display: flex; gap: 6px; overflow-x: auto; padding: 8px 0;
+  scrollbar-width: none;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+
+.filter-pill {
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text3); font-family: var(--font-mono); font-size: 10px;
+  padding: 3px 10px; border-radius: 20px; cursor: pointer;
+  white-space: nowrap; transition: all 0.15s; letter-spacing: 0.04em;
+}
+.filter-pill:hover { border-color: var(--accent); color: var(--accent); }
+.filter-pill.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* ─── PERIOD ROW ────────────────────────────────────────────────── */
+.period-bar {
+  display: flex; gap: 6px; overflow-x: auto; padding: 6px 0 10px;
+  scrollbar-width: none; align-items: center;
+}
+.period-bar::-webkit-scrollbar { display: none; }
+.period-label { font-family: var(--font-mono); font-size: 9px; color: var(--text3); letter-spacing: 0.08em; flex-shrink: 0; }
+
+.period-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-mono); font-size: 10px;
+  padding: 2px 8px; border-radius: 3px; cursor: pointer;
+  white-space: nowrap; transition: all 0.15s;
+}
+.period-btn:hover { border-color: var(--accent); color: var(--accent); }
+.period-btn.on { background: rgba(232,197,71,0.06); border-color: var(--accent2); color: var(--accent); }
+
+#story-count { font-family: var(--font-mono); font-size: 9px; color: var(--text3); margin-left: auto; flex-shrink: 0; }
+
+/* ─── TICKER ────────────────────────────────────────────────────── */
+#ticker-bar {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden; height: 28px;
+  display: flex; align-items: center;
+}
+.ticker-label {
+  background: var(--accent); color: #000;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 500;
+  padding: 0 10px; height: 100%; display: flex; align-items: center;
+  letter-spacing: 0.1em; flex-shrink: 0; z-index: 1;
+}
+.ticker-track { display: flex; animation: ticker 60s linear infinite; gap: 0; }
+.ticker-item {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text2);
+  padding: 0 24px; white-space: nowrap; border-right: 1px solid var(--border); letter-spacing: 0.03em;
+}
+.ticker-item a { color: inherit; text-decoration: none; }
+.ticker-item a:hover { color: var(--accent); }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ─── MAIN LAYOUT ───────────────────────────────────────────────── */
+#main { padding: 20px; max-width: 1400px; margin: 0 auto; }
+
+/* ─── SOURCE SECTION ────────────────────────────────────────────── */
+.source-section { margin-bottom: 28px; }
+
+.section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0 10px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; user-select: none;
+  transition: border-color 0.2s;
+}
+.section-header:hover { border-color: var(--border2); }
+.section-title {
+  font-family: var(--font-display); font-size: 17px; font-weight: 700;
+  color: var(--text-bright); letter-spacing: 0.02em;
+}
+.section-badge {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--text3); letter-spacing: 0.06em;
+  background: var(--surface2); border: 1px solid var(--border);
+  padding: 1px 6px; border-radius: 2px;
+}
+.section-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s infinite;
+}
+.section-dot.err { background: var(--red); box-shadow: 0 0 6px var(--red); animation: none; }
+.section-dot.load { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.section-chevron {
+  margin-left: auto; color: var(--text3); font-size: 10px;
+  transition: transform 0.25s;
+}
+.section-header.collapsed .section-chevron { transform: rotate(-90deg); }
+
+.section-body { overflow: hidden; transition: max-height 0.3s ease; }
+.section-body.collapsed { max-height: 0 !important; }
+
+/* ─── STORY GRID ────────────────────────────────────────────────── */
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  padding-top: 12px;
+}
+
+/* ─── STORY CARD ────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px;
+  position: relative;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  cursor: default;
+}
+.card:hover {
+  border-color: var(--border2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transform: translateY(-1px);
+}
+.card.read { opacity: 0.45; }
+.card.bookmarked { border-left: 2px solid var(--accent); }
+.card.dedup-group { border-left: 2px solid var(--purple); }
+
+.card-category {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 7px;
+}
+
+.card-title {
+  font-family: var(--font-display); font-weight: 700;
+  line-height: 1.35; margin-bottom: 8px;
+  transition: color 0.15s;
+}
+.card-title a {
+  color: var(--text-bright); text-decoration: none;
+}
+.card-title a:hover { color: var(--accent); }
+
+.card-desc {
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+  margin-bottom: 10px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-overflow: hidden;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 9px; color: var(--text3);
+  flex-wrap: wrap;
+}
+.card-time { letter-spacing: 0.04em; }
+.card-source { color: var(--text3); }
+
+/* card actions row */
+.card-actions {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.act-btn {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text3); font-family: var(--font-mono); font-size: 9px;
+  padding: 3px 8px; border-radius: 2px; cursor: pointer;
+  transition: all 0.15s; letter-spacing: 0.04em;
+  display: flex; align-items: center; gap: 3px;
+}
+.act-btn:hover { border-color: var(--accent); color: var(--accent); }
+.act-btn.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.act-btn.ai-btn:hover { border-color: var(--blue); color: var(--blue); }
+.act-btn.law-btn:hover { border-color: var(--purple); color: var(--purple); }
+.act-btn.share-btn:hover { border-color: var(--green); color: var(--green); }
+
+/* dedup badge */
+.dedup-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--purple); background: rgba(142,109,191,0.1);
+  border: 1px solid rgba(142,109,191,0.3);
+  padding: 2px 6px; border-radius: 2px; margin-left: auto;
+  cursor: pointer;
+}
+
+/* ─── AI PANEL ──────────────────────────────────────────────────── */
+.ai-panel {
+  display: none;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.ai-panel.open { display: block; }
+.ai-panel-label {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--blue); letter-spacing: 0.08em; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ai-panel-label.law { color: var(--purple); }
+.ai-panel-label.related { color: var(--green); }
+.ai-spinner { display: inline-block; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.related-list { list-style: none; margin-top: 6px; }
+.related-list li { padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text2); }
+.related-list li:last-child { border-bottom: none; }
+.related-list a { color: var(--accent); text-decoration: none; }
+.related-list a:hover { text-decoration: underline; }
+
+/* ─── BOOKMARKS SIDEBAR ─────────────────────────────────────────── */
+#bm-panel {
+  position: fixed; top: 0; right: -380px; width: 360px; height: 100vh;
+  background: var(--surface); border-left: 1px solid var(--border2);
+  z-index: 200; transition: right 0.3s ease; display: flex; flex-direction: column;
+  overflow: hidden;
+}
+#bm-panel.open { right: 0; }
+#bm-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--border);
+}
+#bm-panel-header h2 {
+  font-family: var(--font-display); font-size: 18px; color: var(--text-bright);
+}
+#bm-list {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+}
+.bm-item {
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.bm-item-title { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.bm-item-title a { color: inherit; text-decoration: none; }
+.bm-item-title a:hover { color: var(--accent); }
+.bm-item-meta { font-family: var(--font-mono); font-size: 9px; color: var(--text3); }
+.bm-item-del { float: right; background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; }
+.bm-item-del:hover { color: var(--red); }
+.bm-empty { font-family: var(--font-mono); font-size: 11px; color: var(--text3); text-align: center; margin-top: 40px; }
+
+#bm-export-row { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+
+/* ─── ADD SOURCE MODAL ──────────────────────────────────────────── */
+#modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); z-index: 300;
+  align-items: center; justify-content: center;
+}
+#modal-overlay.open { display: flex; }
+#modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 24px; width: 380px; max-width: 95vw;
+}
+#modal h3 { font-family: var(--font-display); font-size: 20px; color: var(--text-bright); margin-bottom: 16px; }
+.modal-row { margin-bottom: 12px; }
+.modal-row label { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 5px; }
+.modal-row input {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text); font-family: var(--font-mono); font-size: 11px;
+  padding: 7px 10px; border-radius: 3px; outline: none;
+}
+.modal-row input:focus { border-color: var(--accent); }
+.modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+
+/* ─── NOTIFICATIONS ─────────────────────────────────────────────── */
+#notif-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: var(--red); color: #fff;
+  font-family: var(--font-mono); font-size: 8px;
+  width: 14px; height: 14px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  display: none;
+}
+.notif-wrap { position: relative; }
+
+/* ─── STATUS BAR ────────────────────────────────────────────────── */
+#status-bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 6px 20px; font-family: var(--font-mono); font-size: 9px; color: var(--text3);
+  border-bottom: 1px solid var(--border); letter-spacing: 0.04em;
+  background: var(--surface); flex-wrap: wrap;
+}
+.status-item { display: flex; align-items: center; gap: 5px; }
+.status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+.status-dot.warn { background: var(--accent); }
+.status-dot.err { background: var(--red); }
+
+/* ─── TOAST ─────────────────────────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--surface2); border: 1px solid var(--accent);
+  color: var(--accent); font-family: var(--font-mono); font-size: 11px;
+  padding: 8px 20px; border-radius: 3px; z-index: 999;
+  opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─── EMPTY + ERROR ──────────────────────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 32px 16px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--text3);
+}
+.empty-state a { color: var(--accent); text-decoration: none; cursor: pointer; }
+
+/* ─── FOOTER ────────────────────────────────────────────────────── */
+#footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  font-family: var(--font-mono); font-size: 9px; color: var(--text3);
+}
+#footer .api-stats { display: flex; gap: 16px; }
+.api-stat { display: flex; align-items: center; gap: 5px; }
+.api-stat-val { color: var(--accent); }
+
+/* ─── OVERLAY CLOSE ZONE ────────────────────────────────────────── */
+#side-close {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 190;
+}
+#side-close.open { display: block; }
+
+/* ─── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  #main { padding: 12px; }
+  .story-grid { grid-template-columns: 1fr; }
+  .logo { font-size: 22px; }
+  #search-input { width: 140px; }
+  #search-input:focus { width: 180px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═════════════════════════════════════════════════════ -->
+<div id="header">
+  <div class="header-top">
+    <div class="logo">SIGNAL <span>INTELLIGENCE FEED · v2.0</span></div>
+    <div class="header-controls">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Search stories..." oninput="filterStories()">
+      </div>
+      <div class="font-row">
+        <label>Aa</label>
+        <button class="ctrl-btn" onclick="adjustFont(-1)">−</button>
+        <button class="ctrl-btn" onclick="adjustFont(1)">+</button>
+      </div>
+      <button class="ctrl-btn" onclick="toggleReadHide()" id="read-hide-btn">Hide Read</button>
+      <button class="ctrl-btn" onclick="markAllRead()">Mark All Read</button>
+      <button class="ctrl-btn accent" onclick="manualRefresh()">↻ Refresh</button>
+      <div class="notif-wrap">
+        <button class="ctrl-btn" onclick="openNotifMenu()" id="notif-btn">🔔</button>
+        <span id="notif-badge">0</span>
+      </div>
+      <button class="ctrl-btn" onclick="openBmPanel()" id="bm-toggle">☆ Saved (<span id="bm-count">0</span>)</button>
+      <button class="ctrl-btn" onclick="openAddSource()">+ Source</button>
+      <button class="ctrl-btn" id="apikey-btn" onclick="openApiModal()" title="Set Anthropic API Key">🔑 API Key</button>
+    </div>
+  </div>
+  <div class="filter-bar" id="filter-bar"><!-- filled by JS --></div>
+  <div class="period-bar">
+    <span class="period-label">PERIOD:</span>
+    <button class="period-btn on" data-period="all" onclick="setPeriod(this,'all')">All time</button>
+    <button class="period-btn" data-period="today" onclick="setPeriod(this,'today')">Today</button>
+    <button class="period-btn" data-period="3d" onclick="setPeriod(this,'3d')">Past 3 days</button>
+    <button class="period-btn" data-period="7d" onclick="setPeriod(this,'7d')">Past week</button>
+    <button class="period-btn" data-period="30d" onclick="setPeriod(this,'30d')">Past month</button>
+    <span id="story-count">—</span>
+  </div>
+</div>
+
+<!-- ═══ TICKER ═════════════════════════════════════════════════════ -->
+<div id="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="ticker-track" id="ticker-track">
+      <div class="ticker-item">Loading headlines…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STATUS BAR ═════════════════════════════════════════════════ -->
+<div id="status-bar">
+  <div class="status-item"><div class="status-dot" id="net-dot"></div><span id="net-label">Connecting…</span></div>
+  <div class="status-item">⏱ Next refresh: <span id="countdown">3:00</span></div>
+  <div class="status-item">📰 <span id="total-stories">0</span> stories</div>
+  <div class="status-item">🔖 <span id="read-count">0</span> read</div>
+  <div class="status-item">🤖 AI calls: <span id="ai-call-count">0</span></div>
+  <div style="margin-left:auto; font-size:9px;" id="last-updated">—</div>
+</div>
+
+<!-- ═══ MAIN ════════════════════════════════════════════════════════ -->
+<div id="main">
+  <div id="feed">
+    <div class="empty-state">Initializing SIGNAL…</div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═════════════════════════════════════════════════════ -->
+<div id="footer">
+  <div>SIGNAL Intelligence Feed · <span id="footer-year"></span></div>
+  <div class="api-stats">
+    <div class="api-stat">RSS API calls today: <span class="api-stat-val" id="rss-calls">0</span></div>
+    <div class="api-stat">AI calls today: <span class="api-stat-val" id="ai-calls-footer">0</span></div>
+    <div class="api-stat">Est. AI cost: $<span class="api-stat-val" id="ai-cost">0.000</span></div>
+  </div>
+</div>
+
+<!-- ═══ BOOKMARK PANEL ══════════════════════════════════════════════ -->
+<div id="side-close" onclick="closeBmPanel()"></div>
+<div id="bm-panel">
+  <div id="bm-panel-header">
+    <h2>☆ Saved Stories</h2>
+    <button class="ctrl-btn" onclick="closeBmPanel()">✕ Close</button>
+  </div>
+  <div id="bm-list"></div>
+  <div id="bm-export-row">
+    <button class="ctrl-btn" onclick="exportBookmarks('txt')">Export TXT</button>
+    <button class="ctrl-btn" onclick="exportBookmarks('html')">Export HTML</button>
+    <button class="ctrl-btn danger" onclick="clearBookmarks()">Clear All</button>
+  </div>
+</div>
+
+<!-- ═══ ADD SOURCE MODAL ════════════════════════════════════════════ -->
+<div id="modal-overlay" onclick="e => { if(e.target===this) closeModal(); }">
+  <div id="modal">
+    <h3>+ Add RSS Source</h3>
+    <div class="modal-row">
+      <label>SOURCE NAME</label>
+      <input type="text" id="src-name" placeholder="e.g. The Intercept">
+    </div>
+    <div class="modal-row">
+      <label>RSS FEED URL</label>
+      <input type="text" id="src-url" placeholder="https://…/feed or /rss">
+    </div>
+    <div class="modal-row">
+      <label>CATEGORY (optional)</label>
+      <input type="text" id="src-cat" placeholder="e.g. Politics">
+    </div>
+    <div class="modal-actions">
+      <button class="ctrl-btn" onclick="closeModal()">Cancel</button>
+      <button class="ctrl-btn accent" onclick="addCustomSource()">Add Source</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ API KEY MODAL ═══════════════════════════════════════════════ -->
+<div id="apikey-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:400;align-items:center;justify-content:center;">
+  <div style="background:#0d0d10;border:1px solid #28283a;border-radius:6px;padding:28px;width:400px;max-width:95vw;">
+    <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:#f0f0f8;margin-bottom:8px;">🔑 Anthropic API Key</h3>
+    <p style="font-family:monospace;font-size:10px;color:#555568;margin-bottom:16px;line-height:1.6;">Required for AI features. Saved only in your browser — never in the source file.</p>
+    <label style="display:block;font-family:monospace;font-size:10px;color:#555568;margin-bottom:5px;">API KEY</label>
+    <input type="password" id="apikey-input" placeholder="sk-ant-api03-…" style="width:100%;background:#13131a;border:1px solid #28283a;color:#d8d8e0;font-family:monospace;font-size:11px;padding:8px 10px;border-radius:3px;outline:none;margin-bottom:10px;">
+    <p style="font-family:monospace;font-size:9px;color:#555568;margin-bottom:16px;">Get your key at <strong style="color:#e8c547">console.anthropic.com</strong></p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="closeApiModal()" style="background:#13131a;border:1px solid #28283a;color:#888898;font-family:monospace;font-size:10px;padding:5px 12px;border-radius:3px;cursor:pointer;">Cancel</button>
+      <button onclick="saveApiKey()" style="background:#e8c547;border:1px solid #e8c547;color:#000;font-family:monospace;font-size:10px;font-weight:500;padding:5px 12px;border-radius:3px;cursor:pointer;">Save Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══════════════════════════════════════════════════════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ─── CONFIG ────────────────────────────────────────────────────────
+// API key is stored in localStorage — never hardcoded
+let API_KEY = localStorage.getItem('sn_apikey') || '';
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json';
+const RSS2JSON_KEY = ''; // free tier, no key needed
+const MAX_PER_FEED = 20;
+const REFRESH_SECS = 180;
+
+// ─── NEWS SOURCES ───────────────────────────────────────────────────
+const DEFAULT_SOURCES = [
+  { id:'bbc',      name:'BBC News',        url:'https://feeds.bbci.co.uk/news/world/rss.xml',            cat:'World'       },
+  { id:'guardian', name:'The Guardian',    url:'https://www.theguardian.com/world/rss',                  cat:'World'       },
+  { id:'alj',      name:'Al Jazeera',      url:'https://www.aljazeera.com/xml/rss/all.xml',             cat:'World'       },
+  { id:'npr',      name:'NPR News',        url:'https://feeds.npr.org/1001/rss.xml',                    cat:'US'          },
+  { id:'democ',    name:'Democracy Now',   url:'https://www.democracynow.org/democracynow.rss',          cat:'Independent' },
+  { id:'drop',     name:'Drop Site News',  url:'https://www.dropsitenews.com/feed',                     cat:'Independent' },
+  { id:'inter',    name:'The Intercept',   url:'https://theintercept.com/feed/?rss',                    cat:'Independent' },
+  { id:'hill',     name:'The Hill',        url:'https://thehill.com/news/feed/',                        cat:'Politics'    },
+  { id:'ap',       name:'AP News',         url:'https://feeds.apnews.com/rss/apf-topnews',              cat:'World'       },
+  { id:'reuters',  name:'Reuters',         url:'https://feeds.reuters.com/reuters/topNews',             cat:'World'       },
+  { id:'nyt',      name:'New York Times',  url:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',cat:'US'          },
+  { id:'wapo',     name:'Washington Post', url:'https://feeds.washingtonpost.com/rss/world',            cat:'US'          },
+  { id:'axios',    name:'Axios',           url:'https://api.axios.com/feed/',                           cat:'US'          },
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────
+let sources       = [];
+let allStories    = {};   // { sourceId: [story,...] }
+let bookmarks     = JSON.parse(localStorage.getItem('sn_bookmarks')  || '[]');
+let readSet       = new Set(JSON.parse(localStorage.getItem('sn_read')      || '[]'));
+let customSources = JSON.parse(localStorage.getItem('sn_sources')    || '[]');
+let seenIds       = new Set(JSON.parse(localStorage.getItem('sn_seen')      || '[]'));
+let activeFilters = new Set(['ALL']);
+let activePeriod  = 'all';
+let hideRead      = false;
+let fontSize      = parseInt(localStorage.getItem('sn_fontsize') || '14');
+let cdTimer, cdVal = REFRESH_SECS;
+let aiCallCount   = 0;
+let aiCostTotal   = 0;
+let rssCallCount  = 0;
+let newStoryCount = 0;
+
+// ─── BOOT ───────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  applyFontSize();
+  updateKeyBtnStyle();
+  sources = [...DEFAULT_SOURCES, ...customSources];
+  buildFilterBar();
+  loadAll();
+  startCountdown();
+});
+
+// ─── RSS LOADING ─────────────────────────────────────────────────────
+async function loadAll() {
+  setNetStatus('loading');
+  newStoryCount = 0;
+  await Promise.allSettled(sources.map(s => loadSource(s)));
+  render();
+  updateTicker();
+  setNetStatus('ok');
+  saveSeenIds();
+  document.getElementById('last-updated').textContent =
+    'Updated: ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+async function loadSource(src) {
+  const feedEl = document.getElementById(`sec-dot-${src.id}`);
+  if (feedEl) feedEl.className = 'section-dot load';
+  rssCallCount++;
+  document.getElementById('rss-calls').textContent = rssCallCount;
+
+  // Try rss2json first, then fall back to allorigins XML parse
+  let items = null;
+  try { items = await fetchViaRss2json(src.url); } catch(e) { console.warn(`[${src.name}] rss2json failed:`, e.message); }
+  if (!items) {
+    try { items = await fetchViaAllOrigins(src.url); } catch(e) { console.warn(`[${src.name}] allorigins failed:`, e.message); }
+  }
+
+  if (items && items.length) {
+    const mapped = items.map(it => ({
+      id:      stableId(src.id, it.title || it.link),
+      src:     src.id,
+      srcName: src.name,
+      cat:     src.cat,
+      title:   stripHtml(it.title || 'Untitled'),
+      desc:    stripHtml(it.description || it.content || ''),
+      link:    it.link || '#',
+      date:    new Date(it.pubDate || it.published || Date.now()),
+    }));
+    mapped.forEach(it => { if (!seenIds.has(it.id)) { newStoryCount++; seenIds.add(it.id); } });
+    allStories[src.id] = mapped;
+    if (feedEl) feedEl.className = 'section-dot';
+  } else {
+    allStories[src.id] = allStories[src.id] || [];
+    if (feedEl) feedEl.className = 'section-dot err';
+  }
+}
+
+async function fetchViaRss2json(feedUrl) {
+  const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=${MAX_PER_FEED}`;
+  const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const d = await r.json();
+  if (d.status !== 'ok') throw new Error(d.message || 'bad status');
+  return d.items || [];
+}
+
+async function fetchViaAllOrigins(feedUrl) {
+  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
+  const r = await fetch(proxy, { signal: AbortSignal.timeout(12000) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const d = await r.json();
+  const xml = d.contents;
+  if (!xml) throw new Error('empty response');
+  return parseRssXml(xml);
+}
+
+function parseRssXml(xml) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xml, 'text/xml');
+  const isAtom = !!doc.querySelector('feed');
+  const itemSel = isAtom ? 'entry' : 'item';
+  const items = [];
+  doc.querySelectorAll(itemSel).forEach(el => {
+    const g = t => el.querySelector(t)?.textContent?.trim() || '';
+    const link = isAtom
+      ? (el.querySelector('link[rel="alternate"]')?.getAttribute('href') || el.querySelector('link')?.getAttribute('href') || el.querySelector('link')?.textContent || '')
+      : (g('link') || g('guid'));
+    items.push({
+      title:       g('title'),
+      description: g('description') || g('summary') || g('content'),
+      content:     g('content\:encoded') || g('content'),
+      link,
+      pubDate:     g('pubDate') || g('published') || g('updated'),
+    });
+  });
+  return items.slice(0, MAX_PER_FEED);
+}
+
+// ─── DEDUPLICATION ──────────────────────────────────────────────────
+function deduplicateAll(storiesFlat) {
+  const groups = [];
+  const used   = new Set();
+
+  storiesFlat.forEach((s, i) => {
+    if (used.has(i)) return;
+    const group = [s];
+    const words = new Set(tokenize(s.title));
+    storiesFlat.forEach((t, j) => {
+      if (i === j || used.has(j)) return;
+      const tw = tokenize(t.title);
+      const overlap = tw.filter(w => words.has(w)).length;
+      const sim = overlap / Math.max(words.size, tw.length, 1);
+      if (sim >= 0.45) { group.push(t); used.add(j); }
+    });
+    used.add(i);
+    groups.push(group);
+  });
+
+  return groups;
+}
+
+function tokenize(str) {
+  return str.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/)
+            .filter(w => w.length > 3 && !STOPWORDS.has(w));
+}
+const STOPWORDS = new Set(['that','this','with','from','have','will','been','were','they','their','about','into','when','what','which','over','more','also','than','just','says']);
+
+// ─── RENDER ─────────────────────────────────────────────────────────
+function render() {
+  const feed      = document.getElementById('feed');
+  const query     = document.getElementById('search-input').value.toLowerCase().trim();
+  const now       = Date.now();
+  const cutoff    = periodCutoff();
+  let   totalVis  = 0;
+
+  feed.innerHTML = '';
+
+  sources.forEach(src => {
+    const raw = allStories[src.id] || [];
+    if (!raw.length && !allStories.hasOwnProperty(src.id)) return;
+
+    // filter by active source filters
+    if (!activeFilters.has('ALL') && !activeFilters.has(src.id)) return;
+
+    // period + search + read filter
+    let items = raw.filter(s => {
+      if (cutoff && s.date < cutoff) return false;
+      if (hideRead && readSet.has(s.id)) return false;
+      if (query && !s.title.toLowerCase().includes(query) && !s.desc.toLowerCase().includes(query)) return false;
+      return true;
+    });
+
+    // dedup
+    const groups = deduplicateAll(items);
+
+    const section = document.createElement('div');
+    section.className = 'source-section';
+    section.id = `sec-${src.id}`;
+
+    const colKey = `sn_collapsed_${src.id}`;
+    const isCollapsed = localStorage.getItem(colKey) === '1';
+
+    section.innerHTML = `
+      <div class="section-header${isCollapsed ? ' collapsed' : ''}" onclick="toggleSection('${src.id}')">
+        <div class="section-dot${!raw.length ? ' err' : ''}" id="sec-dot-${src.id}"></div>
+        <div class="section-title">${src.name}</div>
+        <div class="section-badge">${src.cat || ''}</div>
+        <div class="section-badge">${groups.length} stories</div>
+        <div class="section-chevron">▼</div>
+      </div>
+      <div class="section-body${isCollapsed ? ' collapsed' : ''}" id="secbody-${src.id}" style="max-height:${isCollapsed?'0':'none'}">
+        <div class="story-grid" id="grid-${src.id}"></div>
+      </div>
+    `;
+    feed.appendChild(section);
+
+    const grid = document.getElementById(`grid-${src.id}`);
+
+    if (!groups.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        ${raw.length ? 'No stories match your filters.' : `Failed to load — <a onclick="loadSource(sources.find(s=>s.id==='${src.id}')).then(render)" style="cursor:pointer">retry</a>`}
+      </div>`;
+    } else {
+      groups.forEach(group => {
+        const s = group[0];
+        grid.appendChild(buildCard(s, group));
+        totalVis++;
+      });
+    }
+  });
+
+  if (!feed.children.length) {
+    feed.innerHTML = '<div class="empty-state">No stories to display. Try adjusting filters or refreshing.</div>';
+  }
+
+  document.getElementById('story-count').textContent = `${totalVis} stories`;
+  document.getElementById('total-stories').textContent = totalVis;
+  document.getElementById('read-count').textContent = readSet.size;
+  updateBmCount();
+  updateNotifBadge();
+}
+
+function buildCard(s, group) {
+  const isRead = readSet.has(s.id);
+  const isBm   = bookmarks.some(b => b.id === s.id);
+  const isDedup = group.length > 1;
+
+  const card = document.createElement('div');
+  card.className = `card${isRead ? ' read' : ''}${isBm ? ' bookmarked' : ''}${isDedup ? ' dedup-group' : ''}`;
+  card.id = `card-${s.id}`;
+  card.style.fontSize = fontSize + 'px';
+
+  const titleSize = Math.round(fontSize * 1.15);
+
+  card.innerHTML = `
+    <div class="card-category">${s.cat || s.srcName}</div>
+    <div class="card-title" style="font-size:${titleSize}px">
+      <a href="${e(s.link)}" target="_blank" rel="noopener" onclick="markRead('${s.id}')">${s.title}</a>
+    </div>
+    ${s.desc ? `<div class="card-desc">${s.desc.substring(0,220)}${s.desc.length>220?'…':''}</div>` : ''}
+    <div class="card-meta">
+      <span class="card-time">${timeAgo(s.date)}</span>
+      <span class="card-source">· ${s.srcName}</span>
+      ${isDedup ? `<span class="dedup-badge" onclick="showDedupSources('${s.id}')" title="Multiple sources">⊞ ${group.length} sources</span>` : ''}
+    </div>
+    <div class="card-actions">
+      <button class="act-btn${isBm ? ' on' : ''}" onclick="toggleBookmark('${s.id}')" title="Save">☆ Save</button>
+      <button class="act-btn" onclick="markRead('${s.id}')" title="Mark read">✓ Read</button>
+      <button class="act-btn ai-btn" onclick="doDeepDive('${s.id}')" title="AI deep dive">🔍 Deep Dive</button>
+      <button class="act-btn ai-btn" onclick="doRelated('${s.id}')" title="Related stories">⊞ Related</button>
+      <button class="act-btn law-btn" onclick="doLawCheck('${s.id}')" title="Law check">⚖ Law Check</button>
+      <button class="act-btn share-btn" onclick="shareStory('${s.id}')" title="Share">⎋ Share</button>
+    </div>
+    <div class="ai-panel" id="aip-${s.id}"></div>
+  `;
+
+  // store story data on element for retrieval
+  card.dataset.story = JSON.stringify({ title: s.title, desc: s.desc, link: s.link, srcName: s.srcName });
+  card.dataset.group = JSON.stringify(group.map(g => ({ title: g.title, link: g.link, srcName: g.srcName })));
+  return card;
+}
+
+// ─── SECTION COLLAPSE ────────────────────────────────────────────────
+function toggleSection(id) {
+  const header = document.querySelector(`#sec-${id} .section-header`);
+  const body   = document.getElementById(`secbody-${id}`);
+  const key    = `sn_collapsed_${id}`;
+  const isCol  = header.classList.toggle('collapsed');
+  body.classList.toggle('collapsed', isCol);
+  if (!isCol) body.style.maxHeight = 'none';
+  localStorage.setItem(key, isCol ? '1' : '0');
+}
+
+// ─── PERIOD ──────────────────────────────────────────────────────────
+function setPeriod(btn, p) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  activePeriod = p;
+  render();
+}
+function periodCutoff() {
+  const now = Date.now();
+  if (activePeriod === 'today') return new Date(new Date().setHours(0,0,0,0));
+  if (activePeriod === '3d')   return new Date(now - 3*86400000);
+  if (activePeriod === '7d')   return new Date(now - 7*86400000);
+  if (activePeriod === '30d')  return new Date(now - 30*86400000);
+  return null;
+}
+
+// ─── FILTER BAR ──────────────────────────────────────────────────────
+function buildFilterBar() {
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = '';
+  const allBtn = mkPill('ALL', 'All Sources', true);
+  bar.appendChild(allBtn);
+  sources.forEach(s => bar.appendChild(mkPill(s.id, s.name)));
+}
+function mkPill(id, label, on=false) {
+  const p = document.createElement('button');
+  p.className = 'filter-pill' + (on ? ' on' : '');
+  p.textContent = label;
+  p.onclick = () => toggleFilter(id, p);
+  return p;
+}
+function toggleFilter(id, el) {
+  if (id === 'ALL') {
+    activeFilters = new Set(['ALL']);
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('on'));
+    el.classList.add('on');
+  } else {
+    activeFilters.delete('ALL');
+    document.querySelector('.filter-pill:first-child').classList.remove('on');
+    el.classList.toggle('on');
+    if (el.classList.contains('on')) activeFilters.add(id);
+    else activeFilters.delete(id);
+    if (!activeFilters.size) { activeFilters.add('ALL'); document.querySelector('.filter-pill:first-child').classList.add('on'); }
+  }
+  render();
+}
+
+// ─── SEARCH ──────────────────────────────────────────────────────────
+function filterStories() { render(); }
+
+// ─── READ / HIDE ─────────────────────────────────────────────────────
+function markRead(id) {
+  readSet.add(id);
+  localStorage.setItem('sn_read', JSON.stringify([...readSet]));
+  const card = document.getElementById(`card-${id}`);
+  if (card) card.classList.add('read');
+  document.getElementById('read-count').textContent = readSet.size;
+}
+function markAllRead() {
+  sources.forEach(s => (allStories[s.id] || []).forEach(st => readSet.add(st.id)));
+  localStorage.setItem('sn_read', JSON.stringify([...readSet]));
+  render(); showToast('All stories marked as read');
+}
+function toggleReadHide() {
+  hideRead = !hideRead;
+  document.getElementById('read-hide-btn').classList.toggle('active', hideRead);
+  render();
+}
+
+// ─── BOOKMARKS ────────────────────────────────────────────────────────
+function toggleBookmark(id) {
+  const card = document.getElementById(`card-${id}`);
+  const data = card ? JSON.parse(card.dataset.story) : null;
+  const exists = bookmarks.findIndex(b => b.id === id);
+  if (exists >= 0) {
+    bookmarks.splice(exists, 1);
+    if (card) { card.classList.remove('bookmarked'); card.querySelector('.act-btn').classList.remove('on'); }
+    showToast('Removed from saved');
+  } else {
+    if (!data) return;
+    bookmarks.push({ id, ...data, savedAt: new Date().toISOString() });
+    if (card) { card.classList.add('bookmarked'); card.querySelector('.act-btn').classList.add('on'); }
+    showToast('Saved ☆');
+  }
+  localStorage.setItem('sn_bookmarks', JSON.stringify(bookmarks));
+  updateBmCount();
+  if (document.getElementById('bm-panel').classList.contains('open')) renderBmPanel();
+}
+function updateBmCount() {
+  document.getElementById('bm-count').textContent = bookmarks.length;
+}
+function openBmPanel() {
+  document.getElementById('bm-panel').classList.add('open');
+  document.getElementById('side-close').classList.add('open');
+  renderBmPanel();
+}
+function closeBmPanel() {
+  document.getElementById('bm-panel').classList.remove('open');
+  document.getElementById('side-close').classList.remove('open');
+}
+function renderBmPanel() {
+  const list = document.getElementById('bm-list');
+  if (!bookmarks.length) { list.innerHTML = '<div class="bm-empty">No saved stories yet.</div>'; return; }
+  list.innerHTML = bookmarks.map(b => `
+    <div class="bm-item">
+      <button class="bm-item-del" onclick="toggleBookmark('${b.id}')">✕</button>
+      <div class="bm-item-title"><a href="${e(b.link)}" target="_blank">${b.title}</a></div>
+      <div class="bm-item-meta">${b.srcName} · ${b.savedAt ? new Date(b.savedAt).toLocaleDateString() : ''}</div>
+    </div>
+  `).join('');
+}
+function clearBookmarks() {
+  if (!confirm('Clear all saved stories?')) return;
+  bookmarks = [];
+  localStorage.removeItem('sn_bookmarks');
+  updateBmCount(); renderBmPanel(); showToast('Bookmarks cleared');
+}
+function exportBookmarks(fmt) {
+  if (!bookmarks.length) { showToast('No saved stories to export'); return; }
+  let content, type, ext;
+  if (fmt === 'txt') {
+    content = bookmarks.map(b => `${b.title}\n${b.link}\n${b.srcName}\n`).join('\n---\n\n');
+    type = 'text/plain'; ext = 'txt';
+  } else {
+    content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Signal Bookmarks</title></head><body style="font-family:sans-serif;max-width:700px;margin:40px auto"><h1>Signal Saved Stories</h1>${bookmarks.map(b=>`<div style="margin:20px 0;padding:16px;border:1px solid #ddd"><a href="${b.link}" target="_blank" style="font-size:16px;font-weight:bold">${b.title}</a><p style="color:#666;font-size:12px">${b.srcName}</p></div>`).join('')}</body></html>`;
+    type = 'text/html'; ext = 'html';
+  }
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `signal-saved.${ext}`; a.click();
+  showToast(`Exported ${bookmarks.length} stories`);
+}
+
+// ─── ADD CUSTOM SOURCE ────────────────────────────────────────────────
+function openAddSource() { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal()     { document.getElementById('modal-overlay').classList.remove('open'); }
+function addCustomSource() {
+  const name = document.getElementById('src-name').value.trim();
+  const url  = document.getElementById('src-url').value.trim();
+  const cat  = document.getElementById('src-cat').value.trim() || 'Custom';
+  if (!name || !url) { showToast('Name and URL required'); return; }
+  const id = 'custom_' + Date.now();
+  const src = { id, name, url, cat, custom: true };
+  customSources.push(src);
+  sources.push(src);
+  localStorage.setItem('sn_sources', JSON.stringify(customSources));
+  closeModal();
+  buildFilterBar();
+  loadSource(src).then(render);
+  showToast(`Added: ${name}`);
+  ['src-name','src-url','src-cat'].forEach(i => document.getElementById(i).value = '');
+}
+
+// ─── SHARE ────────────────────────────────────────────────────────────
+function shareStory(id) {
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  const s = JSON.parse(card.dataset.story);
+  const text = `${s.title}\n${s.link}`;
+  if (navigator.share) {
+    navigator.share({ title: s.title, url: s.link }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast('Link copied!')).catch(() => {
+      prompt('Copy this link:', s.link);
+    });
+  }
+}
+
+// ─── DEDUP TOOLTIP ───────────────────────────────────────────────────
+function showDedupSources(id) {
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  const group = JSON.parse(card.dataset.group);
+  const names = group.map(g => g.srcName).join(', ');
+  showToast(`Covered by: ${names}`);
+}
+
+// ─── FONT SIZE ───────────────────────────────────────────────────────
+function adjustFont(d) {
+  fontSize = Math.max(11, Math.min(20, fontSize + d));
+  localStorage.setItem('sn_fontsize', fontSize);
+  applyFontSize();
+  updateKeyBtnStyle();
+  render();
+}
+function applyFontSize() {
+  document.body.style.fontSize = fontSize + 'px';
+}
+
+// ─── TICKER ──────────────────────────────────────────────────────────
+function updateTicker() {
+  const headlines = [];
+  sources.forEach(s => {
+    (allStories[s.id] || []).slice(0, 3).forEach(st => headlines.push({ title: st.title, link: st.link }));
+  });
+  if (!headlines.length) return;
+  const shuffled = headlines.sort(() => Math.random() - 0.5).slice(0, 30);
+  const track = document.getElementById('ticker-track');
+  const items = shuffled.map(h => `<div class="ticker-item"><a href="${e(h.link)}" target="_blank" rel="noopener">${h.title}</a></div>`).join('');
+  track.innerHTML = items + items; // double for seamless loop
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────
+function updateNotifBadge() {
+  const badge = document.getElementById('notif-badge');
+  if (newStoryCount > 0) {
+    badge.textContent = newStoryCount > 99 ? '99+' : newStoryCount;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+  document.getElementById('ai-call-count').textContent = aiCallCount;
+}
+function openNotifMenu() {
+  showToast(`${newStoryCount} new stories since last visit`);
+  newStoryCount = 0;
+  updateNotifBadge();
+}
+
+// ─── COUNTDOWN ───────────────────────────────────────────────────────
+function startCountdown() {
+  cdVal = REFRESH_SECS;
+  clearInterval(cdTimer);
+  cdTimer = setInterval(() => {
+    cdVal--;
+    const m = Math.floor(cdVal / 60);
+    const s = String(cdVal % 60).padStart(2, '0');
+    document.getElementById('countdown').textContent = `${m}:${s}`;
+    if (cdVal <= 0) { loadAll(); startCountdown(); }
+  }, 1000);
+}
+function manualRefresh() { loadAll(); startCountdown(); showToast('Refreshing feeds…'); }
+
+// ─── STATUS ──────────────────────────────────────────────────────────
+function setNetStatus(state) {
+  const dot   = document.getElementById('net-dot');
+  const label = document.getElementById('net-label');
+  if (state === 'ok')      { dot.className = 'status-dot';      label.textContent = 'Live'; }
+  if (state === 'loading') { dot.className = 'status-dot warn';  label.textContent = 'Fetching…'; }
+  if (state === 'err')     { dot.className = 'status-dot err';   label.textContent = 'Error'; }
+}
+
+// ─── AI FEATURES ─────────────────────────────────────────────────────
+function getStoryText(id) {
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return null;
+  return JSON.parse(card.dataset.story);
+}
+
+async function callClaude(systemPrompt, userPrompt) {
+  aiCallCount++;
+  document.getElementById('ai-call-count').textContent = aiCallCount;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type':            'application/json',
+      'x-api-key':               API_KEY,
+      'anthropic-version':       '2023-06-01',
+      'anthropic-dangerous-direct-browser-calls': 'true',
+    },
+    body: JSON.stringify({
+      model:      'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system:     systemPrompt,
+      messages:   [{ role: 'user', content: userPrompt }],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `HTTP ${res.status}`);
+  }
+
+  const d = await res.json();
+  const text = (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+
+  // track cost (claude-sonnet input ~$3/M, output ~$15/M — rough estimate)
+  const inTok  = d.usage?.input_tokens  || 0;
+  const outTok = d.usage?.output_tokens || 0;
+  aiCostTotal += (inTok * 3 + outTok * 15) / 1e6;
+  document.getElementById('ai-calls-footer').textContent  = aiCallCount;
+  document.getElementById('ai-cost').textContent = aiCostTotal.toFixed(4);
+
+  return text;
+}
+
+function openAiPanel(id, type, label, color) {
+  const panel = document.getElementById(`aip-${id}`);
+  if (!panel) return null;
+
+  // toggle off if already open with same type
+  if (panel.dataset.type === type && panel.classList.contains('open')) {
+    panel.classList.remove('open');
+    panel.dataset.type = '';
+    return null;
+  }
+
+  panel.dataset.type = type;
+  panel.classList.add('open');
+  panel.innerHTML = `
+    <div class="ai-panel-label" style="color:${color}">
+      <span class="ai-spinner">◌</span> ${label}
+    </div>
+  `;
+  return panel;
+}
+
+async function doDeepDive(id) {
+  const s = getStoryText(id);
+  if (!s) return;
+
+  const panel = openAiPanel(id, 'deepdive', 'DEEP DIVE — GENERATING…', 'var(--blue)');
+  if (!panel) return;
+
+  const prompt = `Headline: "${s.title}"\nSummary: "${s.desc}"\nSource: ${s.srcName}`;
+
+  try {
+    const result = await callClaude(
+      'You are an expert journalist and intelligence analyst. Given a news headline and summary, write a concise deep dive (200-250 words) that covers: 1) Key facts and context, 2) Why it matters, 3) Potential implications or what to watch for. Use clear paragraphs, no bullet points. Be factual and analytical.',
+      prompt
+    );
+    panel.innerHTML = `
+      <div class="ai-panel-label" style="color:var(--blue)">🔍 DEEP DIVE · ${s.srcName}</div>
+      <div style="white-space:pre-wrap;line-height:1.7">${result}</div>
+    `;
+  } catch(err) {
+    panel.innerHTML = `<div class="ai-panel-label" style="color:var(--red)">✕ Error: ${err.message}</div>`;
+  }
+}
+
+async function doRelated(id) {
+  const s = getStoryText(id);
+  if (!s) return;
+
+  const panel = openAiPanel(id, 'related', 'FINDING RELATED STORIES…', 'var(--green)');
+  if (!panel) return;
+
+  // gather all loaded headlines
+  const allTitles = [];
+  sources.forEach(src => {
+    (allStories[src.id] || []).forEach(st => {
+      if (st.id !== id) allTitles.push({ title: st.title, link: st.link, src: st.srcName });
+    });
+  });
+
+  const titleList = allTitles.slice(0, 60).map((t,i) => `${i+1}. [${t.src}] ${t.title}`).join('\n');
+
+  try {
+    const result = await callClaude(
+      'You are a news analyst. Given a target story and a list of headlines, identify the 3-5 most thematically related stories. Return ONLY a JSON array: [{"index": N, "reason": "brief reason"}]. No other text.',
+      `Target story: "${s.title}"\n\nHeadlines:\n${titleList}`
+    );
+
+    let parsed;
+    try { parsed = JSON.parse(result.replace(/```json|```/g,'').trim()); }
+    catch { throw new Error('Could not parse AI response'); }
+
+    const items = parsed.map(p => {
+      const t = allTitles[p.index - 1];
+      return t ? `<li><a href="${e(t.link)}" target="_blank">${t.title}</a><br><small style="color:var(--text3)">${p.reason}</small></li>` : '';
+    }).filter(Boolean).join('');
+
+    panel.innerHTML = `
+      <div class="ai-panel-label" style="color:var(--green)">⊞ RELATED STORIES</div>
+      <ul class="related-list">${items || '<li>No close matches found in current feed</li>'}</ul>
+    `;
+  } catch(err) {
+    panel.innerHTML = `<div class="ai-panel-label" style="color:var(--red)">✕ Error: ${err.message}</div>`;
+  }
+}
+
+async function doLawCheck(id) {
+  const s = getStoryText(id);
+  if (!s) return;
+
+  const panel = openAiPanel(id, 'lawcheck', 'LAW CHECK — ANALYZING…', 'var(--purple)');
+  if (!panel) return;
+
+  try {
+    const result = await callClaude(
+      'You are a legal analyst specializing in US federal and state law. Given a news story, identify any relevant laws, regulations, constitutional provisions, or legal precedents that apply. Include: 1) Relevant federal laws/statutes, 2) Constitutional considerations, 3) Regulatory bodies involved, 4) Any legal precedents. Keep it to 200 words max. Be factual and cite specific laws by name/code where relevant.',
+      `News story: "${s.title}"\n\nContext: "${s.desc}"`
+    );
+    panel.innerHTML = `
+      <div class="ai-panel-label" style="color:var(--purple)">⚖ LAW CHECK · US Federal & State</div>
+      <div style="white-space:pre-wrap;line-height:1.7">${result}</div>
+    `;
+  } catch(err) {
+    panel.innerHTML = `<div class="ai-panel-label" style="color:var(--red)">✕ Error: ${err.message}</div>`;
+  }
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────
+function stableId(src, str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = (Math.imul(31, h) + str.charCodeAt(i)) | 0; }
+  return `${src}_${Math.abs(h).toString(36)}`;
+}
+
+function stripHtml(str) {
+  return (str || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g,' ').trim();
+}
+
+function timeAgo(date) {
+  const d    = date instanceof Date ? date : new Date(date);
+  const diff = Math.floor((Date.now() - d) / 1000);
+  if (diff < 60)    return `${diff}s ago`;
+  if (diff < 3600)  return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  if (diff < 604800)return `${Math.floor(diff/86400)}d ago`;
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function e(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+
+// --- API KEY MODAL ---
+function openApiModal() {
+  const overlay = document.getElementById('apikey-overlay');
+  overlay.style.display = 'flex';
+  const cur = localStorage.getItem('sn_apikey') || '';
+  const inp = document.getElementById('apikey-input');
+  inp.value = cur;
+  inp.placeholder = cur ? 'Key saved — paste new to update' : 'sk-ant-api03-...';
+}
+function closeApiModal() {
+  document.getElementById('apikey-overlay').style.display = 'none';
+}
+function saveApiKey() {
+  const key = document.getElementById('apikey-input').value.trim();
+  if (!key.startsWith('sk-ant-')) { showToast('Invalid key format'); return; }
+  API_KEY = key;
+  localStorage.setItem('sn_apikey', key);
+  closeApiModal();
+  showToast('API key saved');
+  updateKeyBtnStyle();
+}
+function updateKeyBtnStyle() {
+  const btn = document.getElementById('apikey-btn');
+  if (btn) btn.style.borderColor = API_KEY ? 'var(--green)' : 'var(--border2)';
+}
+
+function saveSeenIds() {
+  // keep last 2000 to avoid localStorage bloat
+  const arr = [...seenIds].slice(-2000);
+  localStorage.setItem('sn_seen', JSON.stringify(arr));
+}
+</script>
+</body>
+</html>
